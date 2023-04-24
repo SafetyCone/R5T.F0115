@@ -42,7 +42,7 @@ namespace R5T.F0115
 
             var documentationFilePath = sdk switch
             {
-                IProjectSdkStrings.BlazorWebAssembly_Constant => Instances.FilePathOperator.Get_DocumentationFilePath_ReleaseDirectory(projectFilePath),
+                IProjectSdkStrings.BlazorWebAssembly_Constant => Instances.FilePathOperator.Get_DocumentationFilePath_ReleaseDirectory(projectFilePath).Value,
                 _ => Instances.ProjectPathsOperator.GetDocumentationFilePath_ForAssemblyFilePath(assemblyFilePath),
             };
 

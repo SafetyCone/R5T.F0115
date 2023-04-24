@@ -14,7 +14,7 @@ namespace R5T.F0115
         /// <summary>
         /// Gets the documentation file path of file in the <see cref="Z0012.IDirectoryNames.Release"/> directory.
         /// </summary>
-        public DocumentationXmlFilePath Get_DocumentationFilePath_PublishDirectory(
+        public IDocumentationXmlFilePath Get_DocumentationFilePath_PublishDirectory(
             IProjectFilePath projectFilePath)
         {
             var projectDirectoryPath = Instances.ProjectPathsOperator.GetProjectDirectoryPath(projectFilePath.Value);
@@ -37,7 +37,7 @@ namespace R5T.F0115
         /// <summary>
         /// Gets the documentation file path of file in the <see cref="Z0012.IDirectoryNames.Release"/> directory.
         /// </summary>
-        public DocumentationXmlFilePath Get_DocumentationFilePath_ReleaseDirectory(
+        public IDocumentationXmlFilePath Get_DocumentationFilePath_ReleaseDirectory(
             IProjectFilePath projectFilePath)
         {
             var projectDirectoryPath = F0052.ProjectPathsOperator.Instance.GetProjectDirectoryPath(projectFilePath.Value);
