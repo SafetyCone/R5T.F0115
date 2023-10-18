@@ -15,7 +15,7 @@ namespace R5T.F0115
     public partial interface IOperations : IFunctionalityMarker
     {
         public ProjectFileTuple[] CreateProjectFilesTuples(
-            IList<IProjectFilePath> projectFilePaths,
+            IEnumerable<IProjectFilePath> projectFilePaths,
             ITextOutput textOutput)
         {
             var projectFileTuples = projectFilePaths
@@ -25,35 +25,71 @@ namespace R5T.F0115
             return projectFileTuples;
         }
 
+        public string Get_AssemblyFilePath(
+            string projectFilePath,
+            string projectSdkName)
+        {
+            var assemblyFilePath = projectSdkName switch
+            {
+                IProjectSdkStrings.BlazorWebAssembly_Constant => Instances.FilePathOperator.Get_PublishWwwRootFrameworkDirectoryOutputAssemblyFilePath(projectFilePath),
+                // Else
+                _ => Instances.FilePathOperator.Get_PublishDirectoryOutputAssemblyFilePath(projectFilePath),
+            };
+
+            return assemblyFilePath;
+        }
+
+        public string Get_DocumentationFilePath(
+            IProjectFilePath projectFilePath,
+            string projectSdkName,
+            string assemblyFilePath)
+        {
+            var documentationFilePath = projectSdkName switch
+            {
+                IProjectSdkStrings.BlazorWebAssembly_Constant => Instances.FilePathOperator.Get_DocumentationFilePath_ReleaseDirectory(projectFilePath).Value,
+                _ => Instances.ProjectPathsOperator.GetDocumentationFilePath_ForAssemblyFilePath(assemblyFilePath),
+            };
+
+            return documentationFilePath;
+        }
+
         public ProjectFileTuple CreateProjectFilesTuple(
             IProjectFilePath projectFilePath,
             ITextOutput textOutput)
         {
             textOutput.WriteInformation("Creating project file tuple...\n\t{projectFilePath}", projectFilePath);
 
-            var sdk = Instances.ProjectFileOperator.GetSdk(projectFilePath.Value);
-
-            var assemblyFilePath = sdk switch
+            try
             {
-                IProjectSdkStrings.BlazorWebAssembly_Constant => Instances.FilePathOperator.Get_PublishWwwRootFrameworkDirectoryOutputAssemblyFilePath(projectFilePath.Value),
-                // Else
-                _ => Instances.FilePathOperator.Get_PublishDirectoryOutputAssemblyFilePath(projectFilePath.Value),
-            };
+                var sdk = Instances.ProjectFileOperator.GetSdk(projectFilePath.Value);
 
-            var documentationFilePath = sdk switch
+                var assemblyFilePath = this.Get_AssemblyFilePath(
+                    projectFilePath.Value,
+                    sdk);
+
+                var documentationFilePath = this.Get_DocumentationFilePath(
+                    projectFilePath,
+                    sdk,
+                    assemblyFilePath);
+
+                var output = new ProjectFileTuple
+                {
+                    ProjectFilePath = projectFilePath,
+                    AssemblyFilePath = assemblyFilePath.ToAssemblyFilePath(),
+                    DocumentationFilePath = documentationFilePath.ToDocumentationXmlFilePath(),
+                };
+
+                return output;
+            }
+            catch(Exception)
             {
-                IProjectSdkStrings.BlazorWebAssembly_Constant => Instances.FilePathOperator.Get_DocumentationFilePath_ReleaseDirectory(projectFilePath).Value,
-                _ => Instances.ProjectPathsOperator.GetDocumentationFilePath_ForAssemblyFilePath(assemblyFilePath),
-            };
+                var output = new ProjectFileTuple
+                {
+                    ProjectFilePath = projectFilePath,
+                };
 
-            var projectFilesTuple = new ProjectFileTuple
-            {
-                ProjectFilePath = projectFilePath,
-                AssemblyFilePath = assemblyFilePath.ToAssemblyFilePath(),
-                DocumentationFilePath = documentationFilePath.ToDocumentationXmlFilePath(),
-            };
-
-            return projectFilesTuple;
+                return output;
+            }
         }
     }
 }
