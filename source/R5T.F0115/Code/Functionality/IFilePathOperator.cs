@@ -19,14 +19,14 @@ namespace R5T.F0115
         {
             var projectDirectoryPath = Instances.ProjectPathsOperator.GetProjectDirectoryPath(projectFilePath.Value);
 
-            var releaseDirectoryPath = Instances.PathOperator.GetDirectoryPath(
+            var releaseDirectoryPath = Instances.PathOperator.Get_DirectoryPath(
                 projectDirectoryPath,
                 Instances.DirectoryNames.bin,
                 Instances.DirectoryNames.Publish);
 
             var documentationFileName = Instances.ProjectPathsOperator.GetDocumentationFileName_FromProjectFilePath(projectFilePath.Value);
 
-            var documentationFilePath = Instances.PathOperator.GetFilePath(
+            var documentationFilePath = Instances.PathOperator.Get_FilePath(
                 releaseDirectoryPath,
                 documentationFileName)
                 .ToDocumentationXmlFilePath();
@@ -42,14 +42,14 @@ namespace R5T.F0115
         {
             var projectDirectoryPath = F0052.ProjectPathsOperator.Instance.GetProjectDirectoryPath(projectFilePath.Value);
 
-            var releaseDirectoryPath = F0002.PathOperator.Instance.GetDirectoryPath(
+            var releaseDirectoryPath = F0002.PathOperator.Instance.Get_DirectoryPath(
                 projectDirectoryPath,
                 Instances.DirectoryNames.bin,
                 Instances.DirectoryNames.Release);
 
             var documentationFileName = Instances.ProjectPathsOperator.GetDocumentationFileName_FromProjectFilePath(projectFilePath.Value);
 
-            var documentationFilePath = Instances.PathOperator.GetFilePath(
+            var documentationFilePath = Instances.PathOperator.Get_FilePath(
                 releaseDirectoryPath,
                 documentationFileName)
                 .ToDocumentationXmlFilePath();
